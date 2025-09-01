@@ -1,0 +1,194 @@
+:root {
+    --bg-color: rgb(10, 10, 10);
+    --text-color: #d0d6d6;
+    --accent-color: #d32000;
+    --border-color: #353535;
+    --hover-bg-color: #2c2c2c;
+    --gradient-colors: #0f0200, #3b0900, #971700, var(--accent-color);
+    --reversed-gradient-colors: var(--accent-color), #971700, #3b0900, #0f0200;
+    --font-family: "Roboto", 'Courier-new', monospace;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rgb(10, 10, 10);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.content {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.page {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity .6s ease;
+    pointer-events: none;
+}
+
+.page.current {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+.page.fading-out {
+    z-index: 3;
+    pointer-events: none;
+}
+
+#builds {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.builds-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 24px;
+    padding: 32px 24px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    transition: margin-left .5s ease;
+}
+
+.build {
+    position: relative;
+    height: 80vh;
+    width: 350px;
+    flex: 0 0 350px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 0 8px 12px;
+    background: transparent;
+    --bg-image: none;
+    --bg-size: cover;
+    --bg-pos-x: center;
+    --bg-pos-y: center;
+    cursor: pointer;
+    font-size: 40pt;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #fff;
+    border: none;
+    outline: none;
+    background-clip: padding-box;
+    will-change: transform;
+    transition: transform .45s ease;
+}
+
+.build::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--bg-image);
+    background-position: var(--bg-pos-x) var(--bg-pos-y);
+    background-repeat: no-repeat;
+    background-size: var(--bg-size);
+    mask-image: radial-gradient(rgb(255,255,255), transparent);
+    filter: grayscale(0.7);
+    transition: background-size .5s ease, filter .5s ease, background-position-y .5s ease;
+    z-index: 0;
+}
+
+.thomas { --bg-image: url("images/wp14188059.png"); --bg-pos-y: 39%; --bg-size: 400%; }
+.thomas:hover { --bg-size: 430%; --bg-pos-y: 30%; }
+
+.maks { --bg-image: url("images/changli.jpg"); --bg-size: 130%; --bg-pos-y: 0%; }
+.maks:hover { --bg-pos-y: 0%; --bg-size: 160%; }
+
+.build:hover { transform: scale(1.08); z-index: 2; }
+.build:hover::before { filter: grayscale(0); }
+
+a:link, a:visited, a:active {
+    font-family: var(--font-family);
+    font-weight: 300;
+    font-style: thin;
+    color: var(--text-color);
+    transition: background 0.5s ease, color 0.5s ease;
+}
+
+a:hover {
+    color: transparent;
+    background: linear-gradient(to left, var(--gradient-colors), var(--text-color), var(--reversed-gradient-colors));
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: slide 4s linear infinite;
+    -webkit-background-size: 200%;
+    background-size:200%;
+}
+
+@keyframes slide {
+    from {
+        background-position: 100% 0;
+    }
+    to {
+        background-position: -100% 0;
+    }
+}
+
+/* ================= Loading Logo Animation (visible fill) ================= */
+#loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: clamp(200px, 40vw, 500px);
+    margin: 0 auto;
+}
+
+#loading img {
+    visibility: hidden;
+}
+
+/* Base muted logo */
+#loading::before,
+#loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("images/wutheringWaves.webp") center/contain no-repeat;
+    pointer-events: none;
+}
+
+#loading::before {
+    filter: grayscale(1) brightness(0.55) contrast(0.9);
+    opacity: 0.65;
+    animation: logoExit 5s ease forwards;
+}
+#loading::after {
+    filter: grayscale(0) brightness(1.25) contrast(1.2);
+    clip-path: inset(0 100% 0 0);
+    animation: fillReveal 5s linear forwards, logoExit 5s ease forwards;
+    mix-blend-mode: normal;
+}
+
+@keyframes fillReveal {
+    0% { clip-path: inset(0 100% 0 0); }
+    20% { clip-path: inset(0 90% 0 0); }
+    60% { clip-path: inset(0 90% 0 0); }
+    64% { clip-path: inset(0 25% 0 0); }
+    84% { clip-path: inset(0 0% 0 0); }
+    100% { clip-path: inset(0 0% 0 0); }
+}
+
+@keyframes logoExit {
+    0% { transform: translateY(0); opacity: 1; }
+    84% { transform: translateY(0); opacity: 1; }
+    90% { transform: translateY(-14px); opacity: 1; }
+    96% { transform: translateY(14px); opacity: 0.45; }
+    100% { transform: translateY(14px); opacity: 0; }
+}

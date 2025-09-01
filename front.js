@@ -1,0 +1,100 @@
+const loadingTime = 5000;
+let builds = 0; // total number of build buttons
+let build = 0;  // current index (0-based)
+
+document.addEventListener('DOMContentLoaded', () => {
+    const loadingScreen = document.getElementById('loading');
+    const buildsScreen = document.getElementById('builds');
+
+    builds = document.querySelectorAll(".builds-container button").length;
+
+    loadingScreen.classList.add('current');
+    buildsScreen.classList.remove('current');
+
+    setTimeout(() => {
+        // Start fade transition
+        buildsScreen.classList.add('current');
+        loadingScreen.classList.add('fading-out');
+        loadingScreen.classList.remove('current');
+
+        // After CSS transition completes remove helper class
+        const transitionTime = 650; // slightly longer than CSS .6s
+        setTimeout(() => {
+            loadingScreen.classList.remove('fading-out');
+        }, transitionTime);
+
+        buildsScreen.onwheel = scrollBuilds;
+    }, loadingTime);
+    updateLastCommitDate();
+});
+
+const SCROLL_THROTTLE_MS = 500; // limit handling to once per interval
+let lastScrollLogTime = 0;
+
+function scrollBuilds(event) {
+    const buildsScreen = document.querySelector(".builds-container");
+    event.preventDefault();
+
+    const now = performance.now();
+    if (now - lastScrollLogTime < SCROLL_THROTTLE_MS) return; // throttle
+    lastScrollLogTime = now;
+
+    // Normalize deltas (in case of line/page scroll modes)
+    let { deltaY, deltaX, deltaMode } = event;
+    if (deltaMode === WheelEvent.DOM_DELTA_LINE) {
+        deltaY *= 16; // approx line height
+        deltaX *= 16;
+    } else if (deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+        deltaY *= window.innerHeight;
+        deltaX *= window.innerWidth;
+    }
+
+    let direction = 'none';
+    if (Math.abs(deltaY) >= Math.abs(deltaX)) {
+        if (deltaY > 0) direction = 'down';
+        else if (deltaY < 0) direction = 'up';
+    } else {
+        if (deltaX > 0) direction = 'right';
+        else if (deltaX < 0) direction = 'left';
+    }
+
+    const step = 350; // px per build width
+
+    if (direction === 'down' && build < builds - 1) {
+        build += 1;
+    } else if (direction === 'up' && build > 0) {
+        build -= 1;
+    } else {
+        return; // no change, abort updating position
+    }
+
+    buildsScreen.style.marginLeft = `-${build * step}px`;
+}
+
+async function updateLastCommitDate() {
+    try {
+      const response = await fetch('https://api.github.com/repos/oop1-10/wuwabuilds/commits');
+      if (!response.ok) {
+        throw new Error('Failed to fetch commits');
+      }
+      const commits = await response.json();
+      const latestCommit = commits[0]; // Get the most recent commit
+      const commitDate = new Date(latestCommit.commit.author.date);
+      
+      // Format the date (e.g., "August 14, 2025, 10:47 PM")
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      };
+      const formattedDate = commitDate.toLocaleDateString('en-US', options);
+      
+      // Update the footer
+      document.getElementById('last-updated').textContent = formattedDate;
+    } catch (error) {
+      console.error('Error fetching commit date:', error);
+      document.getElementById('last-updated').textContent = 'Unable to fetch update time';
+    }
+}
