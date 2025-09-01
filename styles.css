@@ -11,6 +11,7 @@
 
 html {
     box-sizing: border-box;
+    cursor: url("images/wuwacursortransparent.png") 0 0, pointer;
 }
 
 body {
@@ -80,7 +81,6 @@ body {
     --bg-size: cover;
     --bg-pos-x: center;
     --bg-pos-y: center;
-    cursor: pointer;
     font-size: 40pt;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     color: #fff;
@@ -111,7 +111,7 @@ body {
 .maks { --bg-image: url("images/changli.jpg"); --bg-size: 130%; --bg-pos-y: 0%; }
 .maks:hover { --bg-pos-y: 0%; --bg-size: 160%; }
 
-.build:hover { transform: scale(1.08); z-index: 2; }
+.build:hover { transform: scale(1.08); z-index: 2; cursor: url("images/wuwacursortransparent.png") 0 0, pointer; }
 .build:hover::before { filter: grayscale(0); }
 
 a:link, a:visited, a:active {

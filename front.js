@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const buildsScreen = document.getElementById('builds');
 
     builds = document.querySelectorAll(".builds-container button").length;
+    buildsButtons = document.querySelectorAll(".builds-container button");
 
     loadingScreen.classList.add('current');
     buildsScreen.classList.remove('current');
@@ -25,6 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         buildsScreen.onwheel = scrollBuilds;
     }, loadingTime);
+
+    buildsButtons.forEach(build => {
+        build.addEventListener("click", () => {
+            let url = build.getAttribute('data');
+            let playerData = parsePlayerData(url);
+            createPlayerPage(playerData);
+        });
+        
+
+    });
+
     updateLastCommitDate();
 });
 
@@ -69,6 +81,23 @@ function scrollBuilds(event) {
     }
 
     buildsScreen.style.marginLeft = `-${build * step}px`;
+}
+
+function parsePlayerData(url) {
+    characterData = []
+    fetch(url).then(response => response.text()).then(data =>{
+        const rawCharacters = data.split('\n').slice(1);
+        rawCharacters.forEach(character =>{
+            characterData.push(character.split(','));
+        });
+    })
+}
+
+function createPlayerPage(characterData) {
+    // Create a new div inside of the builds-container, and set it to current, then transition like we did with the loading screen
+    // it should look like the wuwa character screen,  and the characters on the right side can be selected, but all it will do is fade the video out, and changes the text on the screen
+    const characterPage = document.createElement('div');
+
 }
 
 async function updateLastCommitDate() {
