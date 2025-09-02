@@ -31,11 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
         build.addEventListener("click", () => {
             let url = build.getAttribute('data');
             let playerData = parsePlayerData(url);
-            createPlayerPage(playerData);
+            createPlayerPage(playerData, buildsScreen);
         });
-        
-
     });
+
+    const bgMusic = document.getElementById('bgm');
+    setTimeout(() => {
+        bgMusic.play();
+        bgMusic.volume = 0.3;
+    }, 5000);
 
     updateLastCommitDate();
 });
@@ -93,11 +97,40 @@ function parsePlayerData(url) {
     })
 }
 
-function createPlayerPage(characterData) {
+function createPlayerPage(characterData, buildsScreen) {
     // Create a new div inside of the builds-container, and set it to current, then transition like we did with the loading screen
     // it should look like the wuwa character screen,  and the characters on the right side can be selected, but all it will do is fade the video out, and changes the text on the screen
+    const contentContainer = document.querySelector('.content');
     const characterPage = document.createElement('div');
+    contentContainer.appendChild(characterPage);
 
+    characterPage.classList.add('page');
+
+    characterPage.innerHTML = `
+        <div class="playerPage">
+            <nav class="left-nav">
+                <button class="overall charButton active"></button>
+                <button class="charButton"></button>
+                <button class="charButton"></button>
+                <button class="charButton"></button>
+                <button class="charButton"></button>
+            </nav>
+            <nav class="right-nav"></nav>
+        </div>
+    `;
+
+
+
+    // Start fade transition
+    characterPage.classList.add('current');
+    buildsScreen.classList.add('fading-out');
+    buildsScreen.classList.remove('current');
+
+    // After CSS transition completes remove helper class
+    const transitionTime = 650;
+    setTimeout(() => {
+        buildsScreen.classList.remove('fading-out');
+    }, transitionTime);
 }
 
 async function updateLastCommitDate() {

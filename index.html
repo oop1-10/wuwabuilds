@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+    
     <html lang="en" data-theme="dark">
         <head>
             <meta charset="utf-8">
@@ -9,6 +10,9 @@
             <link rel="icon" href="" type="image/svg+xml">
         </head>
         <body>
+            <!-- Preload click sound -->
+            <audio id="click-sound" src="audio/click.mp3" preload="auto"></audio>
+            <audio id="bgm" src="audio/wuwaBGM.mp3" preload="auto"></audio>
             <script src="front.js"></script>
             <div class="content">
                 <div id ="loading" class="current page"><img src="images/wutheringWaves.webp"></div>
@@ -22,5 +26,24 @@
                     </footer>
                 </div>
             </div>
+            <script>
+                (function() {
+                    const clickNoise = document.getElementById('click-sound');
+                    function playClick() {
+                        if (!clickNoise) return;
+                        try {
+                            // Restart sound from beginning for rapid clicks
+                            clickNoise.currentTime = 0;
+                            clickNoise.volume = 0.8;
+                            clickNoise.play();
+                        } catch(e) {
+                            // Fallback: clone to allow overlapping if locked
+                            try { new Audio(clickNoise.src).play(); } catch(_) {}
+                        }
+                    }
+                    // Use pointerdown for more immediate feedback
+                    document.addEventListener('pointerdown', playClick, { passive: true });
+                })();
+            </script>
         </body>
     </html>
