@@ -155,6 +155,19 @@ a:hover {
     }
 }
 
+/* Nav Bar styling for character pages */
+
+.playerPage {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.left-nav {
+    
+}
+
 /* ================= Loading Logo Animation (visible fill) ================= */
 #loading {
     display: flex;

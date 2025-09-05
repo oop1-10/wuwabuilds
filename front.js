@@ -35,10 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    const bgMusic = document.getElementById('bgm');
+    const bgMusic = new Audio('audio/wuwaBGM.mp3');
     setTimeout(() => {
         bgMusic.play();
-        bgMusic.volume = 0.3;
+        bgMusic.volume = 0.4;
     }, 5000);
 
     updateLastCommitDate();
@@ -52,7 +52,7 @@ function scrollBuilds(event) {
     event.preventDefault();
 
     const now = performance.now();
-    if (now - lastScrollLogTime < SCROLL_THROTTLE_MS) return; // throttle
+    if (now - lastScrollLogTime < SCROLL_THROTTLE_MS) return;
     lastScrollLogTime = now;
 
     // Normalize deltas (in case of line/page scroll modes)
@@ -110,10 +110,11 @@ function createPlayerPage(characterData, buildsScreen) {
         <div class="playerPage">
             <nav class="left-nav">
                 <button class="overall charButton active"></button>
-                <button class="charButton"></button>
-                <button class="charButton"></button>
-                <button class="charButton"></button>
-                <button class="charButton"></button>
+                <button class="weapon charButton"></button>
+                <button class="echoes charButton"></button>
+                <button class="skills charButton"></button>
+                <button class="resonance charButton"></button>
+                <button class="bio charButton"></button>
             </nav>
             <nav class="right-nav"></nav>
         </div>
