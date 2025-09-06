@@ -1,5 +1,6 @@
 const loadingTime = 5000;
 const mediaURL = "https://gist.githubusercontent.com/oop1-10/4e4faa66d1883853650ab19aeeefc332/raw/characterToMedia.csv";
+const characterIcons = {0:""}
 let builds = 0; // total number of build buttons
 let build = 0;  // current index (0-based)
 
@@ -15,15 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setTimeout(() => {
         // Start fade transition
-        buildsScreen.classList.add('current');
-        loadingScreen.classList.add('fading-out');
-        loadingScreen.classList.remove('current');
-
-        // After CSS transition completes remove helper class
-        const transitionTime = 650; // slightly longer than CSS .6s
-        setTimeout(() => {
-            loadingScreen.classList.remove('fading-out');
-        }, transitionTime);
+        fade(buildsScreen, loadingScreen);
 
         buildsScreen.onwheel = scrollBuilds;
     }, loadingTime);
@@ -60,7 +53,7 @@ function scrollBuilds(event) {
     event.preventDefault();
 
     const now = performance.now();
-    if (now - lastScrollLogTime < SCROLL_THROTTLE_MS) return;
+    if (now - lastScrollLogTime < scrollThrottle) return; // fixed constant name
     lastScrollLogTime = now;
 
     // Normalize deltas (in case of line/page scroll modes)
@@ -127,68 +120,105 @@ function createPlayerPage(characterData, buildsScreen, nameToMedia) {
     const contentContainer = document.querySelector('.content');
     const characterPage = document.createElement('div');
     contentContainer.appendChild(characterPage);
-    let build = 0;
+    let headerIcon = "";
 
     characterPage.classList.add('page');
 
     characterPage.innerHTML = `
-        <video autoplay muted loop>
-            <source src="" type="video/mp4" id="bg-video">
+        <video id="bg-video" autoplay>
+            <source src="" type="video/mp4">
         </video>
         <div class="playerPage">
+            <div class="header"></div>
             <nav class="left-nav">
-                <button class="overall charButton active"></button>
-                <button class="weapon charButton"></button>
-                <button class="echoes charButton"></button>
-                <button class="skills charButton"></button>
-                <button class="resonance charButton"></button>
-                <button class="bio charButton"></button>
+                <button class="overall charButton active">Overall Info</button>
+                <button class="weapon charButton">weapon</button>
+                <button class="echoes charButton">echoes</button>
+                <button class="skills charButton">skills</button>
+                <button class="resonance charButton">resonance chain</button>
+                <button class="bio charButton">bio</button>
             </nav>
             <div class="resonatorInfo"></div>
-            <nav class="right-nav">
-
-            </nav>
+            <nav class="right-nav"><button class="backButton">Back to Builds</button></nav>
         </div>
     `;
 
-    const buildNav = document.querySelector(".right-nav");
-    const backgroundVideo = document.getElementById('bg-video');
+    const backButton = document.querySelector(".backButton");
 
-    // Replace incorrect access nameToMedia.characterData[...] with dynamic key lookup
+    backButton.addEventListener("click", () => {
+        backToBuilds(characterPage, buildsScreen);
+    });
+
+    const buildNav = document.querySelector(".right-nav");
     const buildIndex = 0;
     const charName = (characterData[buildIndex] && characterData[buildIndex][0]) ? characterData[buildIndex][0] : null;
+    const mediaEntry = nameToMedia[charName];
+
+    characterData.forEach(() => {
+        const characterButton = document.createElement("button");
+        characterButton.classList.add("buildButton")
+
+        characterButton.innerHTML = `
+            <img src="${mediaEntry[2]}">
+        `;
+
+        buildNav.appendChild(characterButton);
+    });
+
+    const videoEl = characterPage.querySelector('#bg-video');
+    const header = document.querySelector(".header");
+    header.textContent = charName;
+
     if (charName) {
-        const mediaEntry = nameToMedia[charName]; // dynamic access (e.g. nameToMedia['Augusta'])
         if (mediaEntry && mediaEntry[0]) {
-            backgroundVideo.setAttribute('src', mediaEntry[0]);
+            // Play intro (mediaEntry[0]) once, then loop idle (mediaEntry[1])
+            videoEl.loop = false;
+            videoEl.src = mediaEntry[0];
+            videoEl.play()
+
+            const handleFirstEnd = () => {
+                videoEl.removeEventListener('ended', handleFirstEnd);
+                if (mediaEntry[1]) {
+                    videoEl.src = mediaEntry[1];
+                    videoEl.loop = true;
+                    videoEl.play()
+                } else {
+                    // If no second video, just loop the first
+                    videoEl.loop = true;
+                    videoEl.play();
+                }
+            };
+            videoEl.addEventListener('ended', handleFirstEnd);
         } else {
             console.warn('No media entry for character:', charName);
         }
     } else {
         console.warn('Could not determine character name for initial build.');
     }
-    console.log('Video src:', backgroundVideo.getAttribute('src'));
+    console.log('Video src:', videoEl.getAttribute('src'));
 
-    characterData.forEach(() => {
-        buildNav.innerHTML = `
-            <button class="buildButton"></button>
-        `;
-    });
-
-    // Start fade transition
-    characterPage.classList.add('current');
-    buildsScreen.classList.add('fading-out');
-    buildsScreen.classList.remove('current');
-
-    // After CSS transition completes remove helper class
-    const transitionTime = 650;
-    setTimeout(() => {
-        buildsScreen.classList.remove('fading-out');
-    }, transitionTime);
+    // Use next frame so the browser paints the initial (opacity:0) state first
+    requestAnimationFrame(() => fade(characterPage, buildsScreen));
 }
 
 function updatePlayerPage(characterData, characterPage, build) {
     
+}
+
+function backToBuilds(characterPage, buildsScreen) {
+    const contentContainer = document.querySelector('.content');
+
+    fade(buildsScreen, characterPage);
+
+    setTimeout(() => contentContainer.removeChild(characterPage), 650);
+}
+
+function fade(pageToShow, pageToHide) {
+    // Ensure starting hidden (opacity 0) then force reflow so transition will fire
+    pageToShow.classList.remove('current');
+    void pageToShow.offsetWidth; // force reflow
+    pageToShow.classList.add('current'); // fades in
+    pageToHide.classList.remove('current'); // fades out
 }
 
 async function updateLastCommitDate() {
