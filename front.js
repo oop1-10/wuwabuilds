@@ -1,10 +1,12 @@
 const loadingTime = 5000;
+let nameToMedia = {};
 const mediaURL = "https://gist.githubusercontent.com/oop1-10/4e4faa66d1883853650ab19aeeefc332/raw/characterToMedia.csv";
-const characterIcons = {0:""}
 let builds = 0; // total number of build buttons
 let build = 0;  // current index (0-based)
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await parseNameToMedia();
+    console.log('Loaded nameToMedia:', nameToMedia);
     const loadingScreen = document.getElementById('loading');
     const buildsScreen = document.getElementById('builds');
 
@@ -25,11 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener("click", async () => {
             try {
                 const url = btn.getAttribute('data');
-                const [playerData, nameToMedia] = await Promise.all([
-                    parseCharacterData(url),
-                    parseNameToMedia(mediaURL)
-                ]);
-                createPlayerPage(playerData, buildsScreen, nameToMedia);
+                const characterData = await parseCharacterData(url); // FIX: await the async function
+                createPlayerPage(characterData, buildsScreen);
             } catch (e) {
                 console.error('Error loading character data:', e);
             }
@@ -75,7 +74,7 @@ function scrollBuilds(event) {
         else if (deltaX < 0) direction = 'left';
     }
 
-    const step = 350; // px per build width
+    const step = 500; // px per build width
 
     if (direction === 'down' && build < builds - 1) {
         build += 1;
@@ -89,32 +88,22 @@ function scrollBuilds(event) {
 }
 
 async function parseCharacterData(url) {
-    const characterData = [];
     const response = await fetch(url);
-    const text = await response.text();
-    const rawCharacters = text.split('\n').slice(1).filter(l => l.trim().length);
-    rawCharacters.forEach(line => {
-        characterData.push(line.split(',').map(s => s.trim()));
-    });
-    return characterData;
+    if (!response.ok) throw new Error("HTTP Error: " + response.status);
+    const json = await response.json();
+
+    return json;
 }
 
-async function parseNameToMedia(src) {
-    const nameToMedia = {};
-    const response = await fetch(src);
-    const text = await response.text();
-    const rawData = text.split('\n').slice(1).filter(l => l.trim().length);
-    rawData.forEach(line => {
-        const parts = line.split(',').map(s => s.trim());
-        if (parts.length >= 2) {
-            const key = parts[0];
-            nameToMedia[key] = parts.slice(1);
-        }
-    });
-    return nameToMedia;
+async function parseNameToMedia() {
+    const response = await fetch("data/characters.json");
+    if (!response.ok) throw new Error("HTTP Error: " + response.status);
+    const json = await response.json();
+
+    nameToMedia = json;
 }
 
-function createPlayerPage(characterData, buildsScreen, nameToMedia) {
+function createPlayerPage(characterData, buildsScreen) {
     // Create a new div inside of the builds-container, and set it to current, then transition like we did with the loading screen
     // it should look like the wuwa character screen,  and the characters on the right side can be selected, but all it will do is fade the video out, and changes the text on the screen
     const contentContainer = document.querySelector('.content');
@@ -129,8 +118,8 @@ function createPlayerPage(characterData, buildsScreen, nameToMedia) {
             <source src="" type="video/mp4">
         </video>
         <div class="playerPage">
-            <div class="header"></div>
             <nav class="left-nav">
+                <div class="header"></div>
                 <button class="overall charButton active">Overall Info</button>
                 <button class="weapon charButton">weapon</button>
                 <button class="echoes charButton">echoes</button>
@@ -139,70 +128,73 @@ function createPlayerPage(characterData, buildsScreen, nameToMedia) {
                 <button class="bio charButton">bio</button>
             </nav>
             <div class="resonatorInfo"></div>
-            <nav class="right-nav"><button class="backButton">Back to Builds</button></nav>
+            <nav class="right-nav"><div class="buildNav"><button class="backButton">Back to Builds</button></div></nav>
         </div>
     `;
 
     const backButton = document.querySelector(".backButton");
+    backButton.classList.add("backButton")
 
     backButton.addEventListener("click", () => {
         backToBuilds(characterPage, buildsScreen);
     });
 
-    const buildNav = document.querySelector(".right-nav");
-    const buildIndex = 0;
-    const charName = (characterData[buildIndex] && characterData[buildIndex][0]) ? characterData[buildIndex][0] : null;
-    const mediaEntry = nameToMedia[charName];
+    const buildNav = document.querySelector(".buildNav");
+    const charName = characterData[0].character;
+    const currentCharacter = nameToMedia[charName];
 
+    let i = 0;
     characterData.forEach(() => {
         const characterButton = document.createElement("button");
-        characterButton.classList.add("buildButton")
+        characterButton.classList.add("buildButton");
+        characterButton.setAttribute("build", i);
+        characterButton.innerHTML = `<img src="${nameToMedia[characterData[i].character].icon}" style="border-radius: 100%; ">`;
 
-        characterButton.innerHTML = `
-            <img src="${mediaEntry[2]}">
-        `;
+        characterButton.addEventListener("click", () => {
+            updatePlayerPage(characterData, characterPage, i);
+        });
 
         buildNav.appendChild(characterButton);
+        i++;
     });
 
     const videoEl = characterPage.querySelector('#bg-video');
     const header = document.querySelector(".header");
-    header.textContent = charName;
+    header.textContent = currentCharacter.name;
+    
+    if (currentCharacter && currentCharacter.animation) {
+        // Play intro (mediaEntry[0]) once, then loop idle (mediaEntry[1])
+        videoEl.loop = false;
+        videoEl.src = currentCharacter.animation;
+        videoEl.play()
 
-    if (charName) {
-        if (mediaEntry && mediaEntry[0]) {
-            // Play intro (mediaEntry[0]) once, then loop idle (mediaEntry[1])
-            videoEl.loop = false;
-            videoEl.src = mediaEntry[0];
-            videoEl.play()
-
-            const handleFirstEnd = () => {
-                videoEl.removeEventListener('ended', handleFirstEnd);
-                if (mediaEntry[1]) {
-                    videoEl.src = mediaEntry[1];
-                    videoEl.loop = true;
-                    videoEl.play()
-                } else {
-                    // If no second video, just loop the first
-                    videoEl.loop = true;
-                    videoEl.play();
-                }
-            };
-            videoEl.addEventListener('ended', handleFirstEnd);
-        } else {
-            console.warn('No media entry for character:', charName);
-        }
+        const handleFirstEnd = () => {
+            videoEl.removeEventListener('ended', handleFirstEnd);
+            if (currentCharacter.loop) {
+                videoEl.src = currentCharacter.loop;
+                videoEl.loop = true;
+                videoEl.play()
+            } else {
+                // If no second video, just loop the first
+                videoEl.loop = true;
+                videoEl.play();
+            }
+        };
+        videoEl.addEventListener('ended', handleFirstEnd);
     } else {
-        console.warn('Could not determine character name for initial build.');
+        console.warn('No media entry for character:', currentCharacter.name);
     }
+    
     console.log('Video src:', videoEl.getAttribute('src'));
+
+    updatePlayerPage(characterData, characterPage, build);
 
     // Use next frame so the browser paints the initial (opacity:0) state first
     requestAnimationFrame(() => fade(characterPage, buildsScreen));
 }
 
 function updatePlayerPage(characterData, characterPage, build) {
-    
+    const resonatorInfo = document.querySelector(".resonatorInfo");
 }
 
 function backToBuilds(characterPage, buildsScreen) {

@@ -1,0 +1,201 @@
+{"Aalto":{
+    "name": "Aalto",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/aalto_icon.webp"
+},"Augusta":{
+    "name": "Augusta",
+    "animation": "videos/augusta/auganim.mp4",
+    "loop": "videos/augusta/augloop.mp4",
+    "icon": "images/wuwaicons/aug_icon.webp"
+},"Baizhi":{
+    "name": "Baizhi",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/baizhi_icon.webp"
+},"Brant":{
+    "name": "Brant",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/icon_brant.webp"
+},"Calcharo":{
+    "name": "Calcharo",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/kakarot_icon.webp"
+},"Camellya":{
+    "name": "Camellya",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/icon_cam.webp"
+},"Cantarella":{
+    "name": "Cantarella",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/icon_canta.webp"
+},"Carlotta":{
+    "name": "Carlotta",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/icon_carlotta.webp"
+},"Cartethyia":{
+    "name": "Cartethyia",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/cart_icon.webp"
+},"Changli":{
+    "name": "Changli",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/changli_icon.webp"
+},"Chisa":{
+    "name": "Chisa",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/"
+},"Chixia":{
+    "name": "Chixia",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/chixia_icon.webp"
+},"Ciaccona":{
+    "name": "Ciaccona",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/cia_icon.webp"
+},"Danjin":{
+    "name": "Danjin",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/danjin_icon.webp"
+},"Encore":{
+    "name": "Encore",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/encore_icon.webp"
+},"Galbrena":{
+    "name": "Galbrena",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/"
+},"Iuno":{
+    "name": "Iuno",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/"
+},"Jianxin":{
+    "name": "Jianxin",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/jiaxin_icon.webp"
+},"Jinhsi":{
+    "name": "Jinhsi",
+    "animation": "videos/jinhsi/jinhsianim.mp4",
+    "loop": "videos/jinhsi/jinhsiloop.mp4",
+    "icon": "images/wuwaicons/jihni_icon.webp"
+},"Jiyan":{
+    "name": "Jiyan",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/jiyan_icon.webp"
+},"Lingyang":{
+    "name": "Lingyang",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/ling_icon.webp"
+},"Lumi":{
+    "name": "Lumi",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/icon_lumi.webp"
+},"Lupa":{
+    "name": "Lupa",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/lupa_icon.webp"
+},"Mortefi":{
+    "name": "Mortefi",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/mortefi_icon.webp"
+},"Phoebe":{
+    "name": "Phoebe",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/icon_phoebe.webp"
+},"Phrolova":{
+    "name": "Phrolova",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/phr_icon.webp"
+},"Qiuyuan":{
+    "name": "Qiuyuan",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/"
+},"Roccia":{
+    "name": "Roccia",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/icon_roccia.webp"
+},"Rover":{
+    "name": "Rover",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/rover_icon.webp"
+},"Sanhua":{
+    "name": "Sanhua",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/senhua_icon.webp"
+},"Taoqi":{
+    "name": "Taoqi",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/taoqi_icon.webp"
+},"The Shorekeeper":{
+    "name": "The Shorekeeper",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/icon_keeper.webp"
+},"Verina":{
+    "name": "Verina",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/verina_icon.webp"
+},"Xiangli Yao":{
+    "name": "Xiangli Yao",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/icon_xiang.webp"
+},"Yangyang":{
+    "name": "Yangyang",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/yang_icon.webp"
+},"Yinlin":{
+    "name": "Yinlin",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/yinglin_icon.webp"
+},"Youhu":{
+    "name": "Youhu",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/icon_youhu.webp"
+},"Yuanwu":{
+    "name": "Yuanwu",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/yuanwu_icon.webp"
+},"Zani":{
+    "name": "Zani",
+    "animation": "videos/zani/zanianim.mp4",
+    "loop": "videos/zani/zaniloop.mp4",
+    "icon": "images/wuwaicons/icon_zani.webp"
+},"Zhezhi":{
+    "name": "Zhezhi",
+    "animation": "",
+    "loop": "",
+    "icon": "images/wuwaicons/icon_zhe.webp"
+}}

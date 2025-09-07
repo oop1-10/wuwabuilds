@@ -143,33 +143,70 @@ a:hover {
     width: 100%;
     height: 100%;
     transition: opacity .6s ease;
+    display: flex;
+    flex-direction: row;
 }
 
 .left-nav {
     float: left;
-    width: 100px;
+    width: 170px;
     height: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding: 10px;
 }
 
 .right-nav {
-    float: left;
-    width: 100px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 170px;
     height: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding: 10px;
+    overflow: none;
 }
 
-.playerPage {
-    width: 100%;
+.buildNav {
     height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
 }
 
+/* Button Styling */
+.charButton {
+    height: 15%;
+    width: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.buildButton {
+    height: 160px;
+    width: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    border: 4px solid transparent;
+    background: linear-gradient(transparent, transparent) padding-box,linear-gradient(135deg, #FFD700, transparent) border-box;
+}
+.resonatorInfo {
+    width: 20%;
+    height: 70%;
+    overflow: hidden;
+    background-color: white;
+}
+
+/* Background videos and header styling */
 #bg-video {
-    /* Force full-viewport coverage on larger resolutions */
     position: absolute;
     inset: 0;
     width: 100vw;
