@@ -3,6 +3,7 @@ let nameToMedia = {};
 const mediaURL = "https://gist.githubusercontent.com/oop1-10/4e4faa66d1883853650ab19aeeefc332/raw/characterToMedia.csv";
 let builds = 0; // total number of build buttons
 let build = 0;  // current index (0-based)
+let currentCharacterName = '';
 
 document.addEventListener('DOMContentLoaded', async () => {
     await parseNameToMedia();
@@ -120,12 +121,12 @@ function createPlayerPage(characterData, buildsScreen) {
         <div class="playerPage">
             <nav class="left-nav">
                 <div class="header"></div>
-                <button class="overall charButton active">Overall Info</button>
+                <button class="overall charButton">Overall Info</button>
                 <button class="weapon charButton">weapon</button>
                 <button class="echoes charButton">echoes</button>
                 <button class="skills charButton">skills</button>
-                <button class="resonance charButton">resonance chain</button>
-                <button class="bio charButton">bio</button>
+                <button class="chain charButton">resonance chain</button>
+                <button class="bio charButton">bio</button> 
             </nav>
             <div class="resonatorInfo"></div>
             <nav class="right-nav"><div class="buildNav"><button class="backButton">Back to Builds</button></div></nav>
@@ -133,7 +134,7 @@ function createPlayerPage(characterData, buildsScreen) {
     `;
 
     const backButton = document.querySelector(".backButton");
-    backButton.classList.add("backButton")
+    backButton.classList.add("backButton");
 
     backButton.addEventListener("click", () => {
         backToBuilds(characterPage, buildsScreen);
@@ -142,20 +143,34 @@ function createPlayerPage(characterData, buildsScreen) {
     const buildNav = document.querySelector(".buildNav");
     const charName = characterData[0].character;
     const currentCharacter = nameToMedia[charName];
+    currentCharacterName = currentCharacter;
+    const buildData = characterData[0];
 
-    let i = 0;
+    let index = 0;
+    let build = 0;
+    let buttonID = 0;
     characterData.forEach(() => {
         const characterButton = document.createElement("button");
         characterButton.classList.add("buildButton");
-        characterButton.setAttribute("build", i);
-        characterButton.innerHTML = `<img src="${nameToMedia[characterData[i].character].icon}" style="border-radius: 100%; ">`;
+        characterButton.setAttribute("build", index);
+        characterButton.innerHTML = `<img src="${nameToMedia[characterData[index].character].icon}" style="border-radius: 100%; ">`;
 
         characterButton.addEventListener("click", () => {
-            updatePlayerPage(characterData, characterPage, i);
+            updatePlayerPage(characterPage, characterData[index], index, buttonID);
         });
 
         buildNav.appendChild(characterButton);
-        i++;
+        index++;
+    });
+
+    const characterButtons = document.querySelectorAll(".charButton");
+
+    // Use the index of each left-nav button as the tab id (0: overall, 1: weapon, ...)
+    characterButtons.forEach((button, idx) => {
+        button.addEventListener("click", () => {
+            updatePlayerPage(characterPage, buildData, build, idx);
+            fade(characterPage, characterPage);
+        });
     });
 
     const videoEl = characterPage.querySelector('#bg-video');
@@ -163,17 +178,16 @@ function createPlayerPage(characterData, buildsScreen) {
     header.textContent = currentCharacter.name;
     
     if (currentCharacter && currentCharacter.animation) {
-        // Play intro (mediaEntry[0]) once, then loop idle (mediaEntry[1])
         videoEl.loop = false;
         videoEl.src = currentCharacter.animation;
-        videoEl.play()
+        videoEl.play();
 
         const handleFirstEnd = () => {
             videoEl.removeEventListener('ended', handleFirstEnd);
             if (currentCharacter.loop) {
                 videoEl.src = currentCharacter.loop;
                 videoEl.loop = true;
-                videoEl.play()
+                videoEl.play();
             } else {
                 // If no second video, just loop the first
                 videoEl.loop = true;
@@ -187,14 +201,78 @@ function createPlayerPage(characterData, buildsScreen) {
     
     console.log('Video src:', videoEl.getAttribute('src'));
 
-    updatePlayerPage(characterData, characterPage, build);
+    updatePlayerPage(characterPage, buildData, build, 0);
 
-    // Use next frame so the browser paints the initial (opacity:0) state first
-    requestAnimationFrame(() => fade(characterPage, buildsScreen));
+    fade(characterPage, buildsScreen);
 }
 
-function updatePlayerPage(characterData, characterPage, build) {
+function updatePlayerPage(characterPage, buildData, build, button) {
     const resonatorInfo = document.querySelector(".resonatorInfo");
+
+    if (buildData.character != currentCharacterName) {
+        const currentCharacter = nameToMedia[buildData.character];
+        const videoEl = characterPage.querySelector('#bg-video');
+        const header = document.querySelector(".header");
+        header.textContent = buildData.character;
+        
+        if (currentCharacter && currentCharacter.animation) {
+            videoEl.loop = false;
+            videoEl.src = currentCharacter.animation;
+            videoEl.play();
+
+            const handleFirstEnd = () => {
+                videoEl.removeEventListener('ended', handleFirstEnd);
+                if (currentCharacter.loop) {
+                    videoEl.src = currentCharacter.loop;
+                    videoEl.loop = true;
+                    videoEl.play();
+                } else {
+                    // If no second video, just loop the first
+                    videoEl.loop = true;
+                    videoEl.play();
+                }
+            };
+            videoEl.addEventListener('ended', handleFirstEnd);
+        } else {
+            console.warn('No media entry for character:', buildData.character);
+        }
+        
+        console.log('Video src:', videoEl.getAttribute('src'));
+    }
+    currentCharacterName = buildData.character;
+    
+    switch (button) {
+        case 0:
+            resonatorInfo.innerHTML = `
+                <p>HP: ${buildData.hp}</p>
+            `;
+            break;
+        
+        case 1:
+            resonatorInfo.innerHTML = `
+                <p>Weapon: ${buildData.weapon}</p>
+            `;
+            break;
+
+        case 2:
+            resonatorInfo.innerHTML = ``;
+            break;
+
+        case 3:
+            resonatorInfo.innerHTML = ``;
+            break;
+
+        case 4:
+            resonatorInfo.innerHTML = ``;
+            break;
+
+        case 5:
+            resonatorInfo.innerHTML = ``;
+            break;
+
+        default:
+            break;
+    }
 }
 
 function backToBuilds(characterPage, buildsScreen) {
@@ -206,11 +284,8 @@ function backToBuilds(characterPage, buildsScreen) {
 }
 
 function fade(pageToShow, pageToHide) {
-    // Ensure starting hidden (opacity 0) then force reflow so transition will fire
-    pageToShow.classList.remove('current');
-    void pageToShow.offsetWidth; // force reflow
-    pageToShow.classList.add('current'); // fades in
     pageToHide.classList.remove('current'); // fades out
+    pageToShow.classList.add('current'); // fades in
 }
 
 async function updateLastCommitDate() {
