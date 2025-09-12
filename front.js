@@ -1,6 +1,5 @@
 const loadingTime = 5000;
 let nameToMedia = {};
-const mediaURL = "https://gist.githubusercontent.com/oop1-10/4e4faa66d1883853650ab19aeeefc332/raw/characterToMedia.csv";
 let builds = 0; // total number of build buttons
 let build = 0;  // current index (0-based)
 let currentCharacterName = '';
@@ -147,8 +146,6 @@ function createPlayerPage(characterData, buildsScreen) {
     const buildData = characterData[0];
 
     let index = 0;
-    let build = 0;
-    let buttonID = 0;
     characterData.forEach(() => {
         const characterButton = document.createElement("button");
         characterButton.classList.add("buildButton");
@@ -156,7 +153,7 @@ function createPlayerPage(characterData, buildsScreen) {
         characterButton.innerHTML = `<img src="${nameToMedia[characterData[index].character].icon}" style="border-radius: 100%; ">`;
 
         characterButton.addEventListener("click", () => {
-            updatePlayerPage(characterPage, characterData[index], index, buttonID);
+            changePlayerBuild(characterPage, characterData, characterButton.getAttribute("build"));
         });
 
         buildNav.appendChild(characterButton);
@@ -168,8 +165,7 @@ function createPlayerPage(characterData, buildsScreen) {
     // Use the index of each left-nav button as the tab id (0: overall, 1: weapon, ...)
     characterButtons.forEach((button, idx) => {
         button.addEventListener("click", () => {
-            updatePlayerPage(characterPage, buildData, build, idx);
-            fade(characterPage, characterPage);
+            updatePlayerPage(buildData, idx);
         });
     });
 
@@ -201,45 +197,13 @@ function createPlayerPage(characterData, buildsScreen) {
     
     console.log('Video src:', videoEl.getAttribute('src'));
 
-    updatePlayerPage(characterPage, buildData, build, 0);
+    updatePlayerPage( buildData, 0);
 
     fade(characterPage, buildsScreen);
 }
 
-function updatePlayerPage(characterPage, buildData, build, button) {
+function updatePlayerPage(buildData, button) {
     const resonatorInfo = document.querySelector(".resonatorInfo");
-
-    if (buildData.character != currentCharacterName) {
-        const currentCharacter = nameToMedia[buildData.character];
-        const videoEl = characterPage.querySelector('#bg-video');
-        const header = document.querySelector(".header");
-        header.textContent = buildData.character;
-        
-        if (currentCharacter && currentCharacter.animation) {
-            videoEl.loop = false;
-            videoEl.src = currentCharacter.animation;
-            videoEl.play();
-
-            const handleFirstEnd = () => {
-                videoEl.removeEventListener('ended', handleFirstEnd);
-                if (currentCharacter.loop) {
-                    videoEl.src = currentCharacter.loop;
-                    videoEl.loop = true;
-                    videoEl.play();
-                } else {
-                    // If no second video, just loop the first
-                    videoEl.loop = true;
-                    videoEl.play();
-                }
-            };
-            videoEl.addEventListener('ended', handleFirstEnd);
-        } else {
-            console.warn('No media entry for character:', buildData.character);
-        }
-        
-        console.log('Video src:', videoEl.getAttribute('src'));
-    }
-    currentCharacterName = buildData.character;
     
     switch (button) {
         case 0:
@@ -273,6 +237,44 @@ function updatePlayerPage(characterPage, buildData, build, button) {
         default:
             break;
     }
+
+    resonatorInfo.style.opacity = 0;
+    setTimeout(() => resonatorInfo.style.opacity = 1);
+}
+
+function changePlayerBuild(characterPage, characterData, build) {
+    const buildData = characterData[build];
+    const currentCharacter = nameToMedia[buildData.character];
+
+    const videoEl = characterPage.querySelector('#bg-video');
+    const header = document.querySelector(".header");
+    header.textContent = currentCharacter.name;
+    
+    if (currentCharacter && currentCharacter.animation) {
+        videoEl.loop = false;
+        videoEl.src = currentCharacter.animation;
+        videoEl.play();
+
+        const handleFirstEnd = () => {
+            videoEl.removeEventListener('ended', handleFirstEnd);
+            if (currentCharacter.loop) {
+                videoEl.src = currentCharacter.loop;
+                videoEl.loop = true;
+                videoEl.play();
+            } else {
+                // If no second video, just loop the first
+                videoEl.loop = true;
+                videoEl.play();
+            }
+        };
+        videoEl.addEventListener('ended', handleFirstEnd);
+    } else {
+        console.warn('No media entry for character:', currentCharacter.name);
+    }
+    
+    console.log('Video src:', videoEl.getAttribute('src'));
+
+    updatePlayerPage(buildData, 0);
 }
 
 function backToBuilds(characterPage, buildsScreen) {
