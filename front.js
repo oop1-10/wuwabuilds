@@ -145,6 +145,7 @@ function createPlayerPage(characterData, buildsScreen) {
     const currentCharacter = nameToMedia[charName];
     currentCharacterName = currentCharacter;
     const buildData = characterData[0];
+    let currentBuild = 0;
 
     let index = 0;
     characterData.forEach(() => {
@@ -155,6 +156,7 @@ function createPlayerPage(characterData, buildsScreen) {
 
         characterButton.addEventListener("click", () => {
             changePlayerBuild(characterPage, characterData, characterButton.getAttribute("build"));
+            currentBuild = characterButton.getAttribute("build");
         });
 
         buildNav.appendChild(characterButton);
@@ -168,7 +170,7 @@ function createPlayerPage(characterData, buildsScreen) {
         button.style.border = "none";
         button.style.background = 'transparent';
         button.addEventListener("click", () => {
-            updatePlayerPage(buildData, idx);
+            updatePlayerPage(characterData[currentBuild], idx);
         });
     });
 
@@ -200,7 +202,7 @@ function createPlayerPage(characterData, buildsScreen) {
     
     console.log('Video src:', videoEl.getAttribute('src'));
 
-    updatePlayerPage( buildData, 0);
+    updatePlayerPage(buildData, 0);
 
     fade(characterPage, buildsScreen);
 }
