@@ -1,5 +1,7 @@
 const loadingTime = 5000;
 let nameToMedia = {};
+const elementIcons = {"Aero": "https://img.game8.co/3884629/f189d5cfa3359e681ba1cbfffdee62d5.png/show", "Electro": "https://img.game8.co/3884642/7c985e17b86bb9d2181b835fbafe5c45.png/show", "Fusion": "https://img.game8.co/3884628/c19736709a556f0e6320ca3578603bf7.png/show", "Glacio": "https://img.game8.co/3884631/a625f54e023f3e9d73712a291d9f6f1c.png/show", "Havoc": "https://img.game8.co/3884630/fa0b538bf3096b7a08389cb40f1bf223.png/show", "Spectro": "https://img.game8.co/3884627/ab3dabdabc17084ad6ed15107a760181.png/show"};
+const characterButtonIcons = {"Overall": "images/characterbuttons/overall.png", "Weapon": "images/characterbuttons/", "Echoes": "images/characterbuttons/", "Skills": "images/characterbuttons/", "Chain": "images/characterbuttons/", "Bio": "images/characterbuttons/"};
 let builds = 0; // total number of build buttons
 let build = 0;  // current index (0-based)
 let currentCharacterName = '';
@@ -109,7 +111,6 @@ function createPlayerPage(characterData, buildsScreen) {
     const contentContainer = document.querySelector('.content');
     const characterPage = document.createElement('div');
     contentContainer.appendChild(characterPage);
-    let headerIcon = "";
 
     characterPage.classList.add('page');
 
@@ -120,12 +121,12 @@ function createPlayerPage(characterData, buildsScreen) {
         <div class="playerPage">
             <nav class="left-nav">
                 <div class="header"></div>
-                <button class="overall charButton">Overall Info</button>
-                <button class="weapon charButton">weapon</button>
-                <button class="echoes charButton">echoes</button>
-                <button class="skills charButton">skills</button>
-                <button class="chain charButton">resonance chain</button>
-                <button class="bio charButton">bio</button> 
+                <button class="overall charButton"><img src="${characterButtonIcons.Overall}" alt="Overall Info"></button>
+                <button class="weapon charButton"><img src="${characterButtonIcons.Weapon}" alt="Weapon"></button>
+                <button class="echoes charButton"><img src="${characterButtonIcons.Echoes}" alt="Echoes"></button>
+                <button class="skills charButton"><img src="${characterButtonIcons.Skills}" alt="Skills"></button>
+                <button class="chain charButton"><img src="${characterButtonIcons.Chain}" alt="Resonance Chain"></button>
+                <button class="bio charButton"><img src="${characterButtonIcons.Bio}" alt="Bio"></button>
             </nav>
             <div class="resonatorInfo"></div>
             <nav class="right-nav"><div class="buildNav"><button class="backButton">Back to Builds</button></div></nav>
@@ -164,6 +165,8 @@ function createPlayerPage(characterData, buildsScreen) {
 
     // Use the index of each left-nav button as the tab id (0: overall, 1: weapon, ...)
     characterButtons.forEach((button, idx) => {
+        button.style.border = "none";
+        button.style.background = 'transparent';
         button.addEventListener("click", () => {
             updatePlayerPage(buildData, idx);
         });
@@ -208,7 +211,42 @@ function updatePlayerPage(buildData, button) {
     switch (button) {
         case 0:
             resonatorInfo.innerHTML = `
-                <p>HP: ${buildData.hp}</p>
+                <div style="display: flex; flex-direction: row;">
+                    <img src="${elementIcons[buildData.type]}" style="width: 100px; height: 100px; ">
+                    <div>
+                        <p style="margin-top: 10px; margin-bottom: 0px; ">${buildData.character}</p>
+                        <p style="margin-top: 0px; margin-bottom: 0px; color: #a69661; ">${buildData.type}</p>
+                    </div>
+                </div>
+
+                <p>Lv. ${buildData.level}/<span style="color: #637079; ">90</span></p>
+                <hr style="width: 100%; ">
+                <table style="width: 100%; ">
+                    <tr >
+                        <td>HP</td>
+                        <td style="margin-left: 0; ">${buildData.hp}</td>
+                    </tr>
+                    <tr>
+                        <td>ATK</td>
+                        <td style="margin-left: 0; ">${buildData.atk}</td>
+                    </tr>
+                    <tr >
+                        <td>DEF</td>
+                        <td style="margin-left: 0; ">${buildData.def}</td>
+                    </tr>
+                    <tr>
+                        <td>Energy Regen</td>
+                        <td style="margin-left: 0; ">${buildData.er}</td>
+                    </tr>
+                    <tr >
+                        <td>Crit. Rate</td>
+                        <td style="margin-left: 0; ">${buildData.cr}</td>
+                    </tr>
+                    <tr>
+                        <td>Crit. DMG</td>
+                        <td style="margin-left: 0; ">${buildData.cd}</td>
+                    </tr>
+                </table>
             `;
             break;
         
