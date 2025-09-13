@@ -45,8 +45,8 @@
     "icon": "images/wuwaicons/cart_icon.webp"
 },"Changli":{
     "name": "Changli",
-    "animation": "",
-    "loop": "",
+    "animation": "videos/changli/changlianim.mp4",
+    "loop": "videos/changli/changliloop.mp4",
     "icon": "images/wuwaicons/changli_icon.webp"
 },"Chisa":{
     "name": "Chisa",
