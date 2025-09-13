@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btn.addEventListener("click", async () => {
             try {
                 const url = btn.getAttribute('data');
-                const characterData = await parseCharacterData(url); // FIX: await the async function
+                let characterData = await parseCharacterData(url);
                 createPlayerPage(characterData, buildsScreen);
             } catch (e) {
                 console.error('Error loading character data:', e);

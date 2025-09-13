@@ -1,5 +1,5 @@
-{
-    "Zani": {
+[
+    {
         "character": "Zani",
         "type": "Spectro",
         "level": "90",
@@ -33,4 +33,4 @@
         "havocres": "",
         "hb": ""
     }
-}
+]
