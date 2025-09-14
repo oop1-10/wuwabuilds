@@ -1,7 +1,7 @@
 const loadingTime = 5000;
 let nameToMedia = {};
 const elementIcons = {"Aero": "https://img.game8.co/3884629/f189d5cfa3359e681ba1cbfffdee62d5.png/show", "Electro": "https://img.game8.co/3884642/7c985e17b86bb9d2181b835fbafe5c45.png/show", "Fusion": "https://img.game8.co/3884628/c19736709a556f0e6320ca3578603bf7.png/show", "Glacio": "https://img.game8.co/3884631/a625f54e023f3e9d73712a291d9f6f1c.png/show", "Havoc": "https://img.game8.co/3884630/fa0b538bf3096b7a08389cb40f1bf223.png/show", "Spectro": "https://img.game8.co/3884627/ab3dabdabc17084ad6ed15107a760181.png/show"};
-const characterButtonIcons = {"Overall": "images/characterbuttons/overall.png", "Weapon": "images/characterbuttons/", "Echoes": "images/characterbuttons/", "Skills": "images/characterbuttons/", "Chain": "images/characterbuttons/", "Bio": "images/characterbuttons/"};
+const characterButtonIcons = {"Overall": "images/characterbuttons/overall.png", "Weapon": "images/characterbuttons/weapon.png", "Echoes": "images/characterbuttons/echoes.png", "Skills": "images/characterbuttons/skills.png", "Chain": "images/characterbuttons/chain.png", "Bio": "images/characterbuttons/bio.png"};
 let builds = 0; // total number of build buttons
 let build = 0;  // current index (0-based)
 let currentCharacterName = '';
@@ -129,7 +129,7 @@ function createPlayerPage(characterData, buildsScreen) {
                 <button class="bio charButton"><img src="${characterButtonIcons.Bio}" alt="Bio"></button>
             </nav>
             <div class="resonatorInfo"></div>
-            <nav class="right-nav"><div class="buildNav"><button class="backButton">Back to Builds</button></div></nav>
+            <nav class="right-nav"><div class="buildNav"><button class="backButton"><img src="images/characterbuttons/backButton.png" alt="Back to Builds"></button></div></nav>
         </div>
     `;
 
@@ -146,6 +146,7 @@ function createPlayerPage(characterData, buildsScreen) {
     currentCharacterName = currentCharacter;
     const buildData = characterData[0];
     let currentBuild = 0;
+    characterPage.setAttribute('currentBuild', currentBuild);
 
     let index = 0;
     characterData.forEach(() => {
@@ -155,9 +156,35 @@ function createPlayerPage(characterData, buildsScreen) {
         characterButton.innerHTML = `<img src="${nameToMedia[characterData[index].character].icon}" style="border-radius: 100%; ">`;
 
         characterButton.addEventListener("click", () => {
+            const characterButtons = document.querySelectorAll(".buildButton");
             changePlayerBuild(characterPage, characterData, characterButton.getAttribute("build"));
             currentBuild = characterButton.getAttribute("build");
+            characterPage.setAttribute('currentBuild', currentBuild);
+
+            characterButtons.forEach(button => {
+                if (button.getAttribute("build") != characterPage.getAttribute('currentBuild')) {
+                    button.classList.remove("glow");
+                } else {
+                    button.classList.add("glow");
+                }
+            });
         });
+
+        characterButton.addEventListener("mouseenter", () => {
+            characterButton.classList.add("glow");
+        });
+
+        characterButton.addEventListener("mouseleave", () => {
+            if (characterButton.getAttribute("build") != characterPage.getAttribute('currentBuild')) {
+                characterButton.classList.remove("glow");
+            }
+        });
+
+        if (characterButton.getAttribute("build") != characterPage.getAttribute('currentBuild')) {
+            characterButton.classList.remove("glow");
+        } else {
+            characterButton.classList.add("glow");
+        }
 
         buildNav.appendChild(characterButton);
         index++;

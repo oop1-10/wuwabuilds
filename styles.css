@@ -168,7 +168,7 @@ a:hover {
     position: absolute;
     top: 0;
     right: 0;
-    width: 170px;
+    width: 200px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -184,6 +184,7 @@ a:hover {
     flex-direction: column;
     gap: 10px;
     overflow-y: auto;
+    align-items: center;
 }
 
 #exp {
@@ -212,9 +213,10 @@ a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: transform ease 0.5s;
 }
 
-.charButton:hover, .buildButton:hover {
+.charButton:hover, .buildButton:hover, .backButton:hover {
     cursor: url("images/CursorHi.png") 0 0, pointer;
 }
 
@@ -227,6 +229,19 @@ a:hover {
     border-radius: 100%;
     border: 4px solid transparent;
     background: linear-gradient(transparent, transparent) padding-box,linear-gradient(135deg, #FFD700, transparent) border-box;
+}
+
+.backButton {
+    background: transparent;
+    border: none;
+    width: 80px;
+    margin: 0 auto;
+    padding: 20px 0;
+    transition: transform ease 0.5s;
+}
+
+.backButton:hover, .charButton:hover {
+    transform: scale(1.2);
 }
 
 /* Background videos and header styling */
@@ -299,4 +314,17 @@ a:hover {
     90% { transform: translateY(-14px); opacity: 1; }
     96% { transform: translateY(14px); opacity: 0.45; }
     100% { transform: translateY(14px); opacity: 0; }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 1px #fff, 0 0 1px #fff, 0 0 1px #FFD700, 0 0 1px #FFD700, 0 0 1px #FFD700, 0 0 1px #FFD700, 0 0 1px #FFD700;
+  }
+  to {
+    box-shadow: 0 0 5px #fff, 0 0 6px #FFD700, 0 0 7px #FFD700, 0 0 8px #FFD700, 0 0 9px #FFD700, 0 0 10px #FFD700, 0 0 11px #FFD700;
+  }
+}
+
+.glow {
+    animation: glow 1s ease-in-out infinite alternate;
 }
